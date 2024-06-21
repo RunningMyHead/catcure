@@ -2,29 +2,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+//数据库相关代码 61--78   登录，校验用户账号密码
+//              136-158  注册，载入用户账号密码至数据库
+//
 public class LoginAndCreate {
      javax.swing.JFrame frame;//创建窗口
      JPanel loginPanel;
      JPanel registerPanel;
 
     public void LoginAndRegisterGUI(javax.swing.JFrame frame) {
-        //frame = new JFrame("登录");
-        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame = frame;
         loginPanel = createLoginPanel();// 创建登录界面
         registerPanel = createRegisterPanel();// 创建创建账号界面
-
-
         showLoginPanel();// 默认显示登录界面
-
-        //frame.pack();
-        //frame.setVisible(true);
     }//创建登录账号页面以及创建账号页面，默认显现登录账号页面
 
      JPanel createLoginPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        //constraints.insets = new Insets(50, 50, 50, 50);
         //设置输入框与登录按钮
         JLabel usernameLabel = new JLabel("账号:");
         JTextField usernameField = new JTextField(20);
@@ -32,21 +27,7 @@ public class LoginAndCreate {
         JPasswordField passwordField = new JPasswordField(20);
         JButton loginButton = new JButton("登录");
 
-        //监听登录按钮的按下
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // 处理登录逻辑
-                String username = usernameField.getText();
-                char[] password = passwordField.getPassword();
-                // 这里可以添加登录验证逻辑
-                //校验函数
-                //对比数据库内容，如果匹敌，登录跳转页面，如果不匹敌，显示账号或密码错误
-
-                JOptionPane.showMessageDialog(panel, "点击登录按钮");//按下就出现
-            }
-        });
-
+        //指定输入框位置
         constraints.gridx = 0;
         constraints.gridy = 0;
         panel.add(usernameLabel, constraints);
@@ -68,16 +49,35 @@ public class LoginAndCreate {
         panel.add(loginButton, constraints);
 
         JLabel registerLabel = new JLabel("没有账号？去注册");
-        registerLabel.setForeground(Color.BLUE.darker());
-        registerLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        registerLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+        registerLabel.setForeground(Color.BLUE.darker());//设置颜色
+         registerLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));//鼠标靠近更改鼠标样式、
+         constraints.gridy = 3;
+         panel.add(registerLabel, constraints);
+         //监听鼠标点击事件
+         registerLabel.addMouseListener(new java.awt.event.MouseAdapter(){
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 showRegisterPanel();
-            }
-        });
+            }//跳转到注册界面
+         });
+        //监听登录按钮的按下
+         loginButton.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+                 // 处理登录逻辑
+                 String username = usernameField.getText();//校验账号
+                 char[] password = passwordField.getPassword();//校验密码
 
-        constraints.gridy = 3;
-        panel.add(registerLabel, constraints);
+                 //需要将数据传入至数据库中访问
+                 // true 为  校验函数
+                 //对比数据库内容，如果匹敌，登录跳转页面，如果不匹敌，显示账号或密码错误
+                 if(true){
+                     //进入首页
+                 }
+                 else {
+                     JOptionPane.showMessageDialog(panel, "账号或密码错误");//按下就出现
+                 }
+             }
+         });
 
         return panel;
     }
@@ -85,7 +85,6 @@ public class LoginAndCreate {
     JPanel createRegisterPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        //constraints.insets = new Insets(50, 50, 50, 50);
 
         JLabel usernameLabel = new JLabel("账号");
         JTextField usernameField = new JTextField(20);
@@ -94,26 +93,6 @@ public class LoginAndCreate {
         JLabel rightpasswordLabel = new JLabel("确认密码");
         JPasswordField rightpasswordField = new JPasswordField(20);
         JButton registerButton = new JButton("创建");
-
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // 处理注册逻辑
-                String username = usernameField.getText();
-                String password = passwordField.getText();
-                String rightpassword = rightpasswordField.getText();
-                // 这里可以添加注册逻辑
-                if(password.equals(rightpassword))
-                {
-                    JOptionPane.showMessageDialog(panel, "点击注册按钮");
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(panel, "注册失败，密码不匹配");
-                }
-
-            }
-        });
 
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -145,17 +124,42 @@ public class LoginAndCreate {
         JLabel loginLabel = new JLabel("已有账号，去登录");
         loginLabel.setForeground(Color.BLUE.darker());//设置颜色
         loginLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));//设置鼠标靠近改变鼠标样式
+        constraints.gridy = 4;
+        panel.add(loginLabel, constraints);
+
+        //监听鼠标点击事件
         loginLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 showLoginPanel();
             }
         });
-        //设置位置
-        constraints.gridy = 4;
-        panel.add(loginLabel, constraints);
+        //监听按钮事件
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 处理注册逻辑
+                String username = usernameField.getText();
+                String password = passwordField.getText();
+                String rightpassword = rightpasswordField.getText();
+                // 这里可以添加注册逻辑
+                if(password.equals(rightpassword)) {
+                    JOptionPane.showMessageDialog(panel, "注册成功");
+
+                    //将 username ， password 载入至数据库中保存
+
+                    showLoginPanel();//自动跳转至登录页面
+                }
+                else {
+                    JOptionPane.showMessageDialog(panel, "注册失败，密码不匹配");
+                }
+
+            }
+        });
 
         return panel;
     }
+
+    //JPanel creat
 
      void showLoginPanel() {
         frame.getContentPane().removeAll();
@@ -172,4 +176,7 @@ public class LoginAndCreate {
         frame.repaint();
         //frame.pack();
     }
+
+
+
 }

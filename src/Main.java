@@ -12,13 +12,13 @@ public class Main {
         frame.setSize(960,480);//设置窗口大小
         frame.setVisible(true);//设置可见性
         return frame;
-    }
+    }//设置窗口
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 new LoginAndCreate().LoginAndRegisterGUI(start());
             }
-        });
+        });//确保其在调度线程上进行，虽然我不懂，但ai是这么写的
     }
 }
