@@ -2,13 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-//数据库相关代码 61--78   登录，校验用户账号密码
-//              136-158  注册，载入用户账号密码至数据库
+
+
+//数据库相关 61--78   登录，校验用户账号密码
+//          136-158  注册，保存用户账号密码至数据库
 //
 public class LoginAndCreate {
-     javax.swing.JFrame frame;//创建窗口
-     JPanel loginPanel;
-     JPanel registerPanel;
+     static javax.swing.JFrame frame;//创建窗口
+     static JPanel loginPanel;
+     static JPanel registerPanel;
 
     public void LoginAndRegisterGUI(javax.swing.JFrame frame) {
         this.frame = frame;
@@ -72,6 +74,7 @@ public class LoginAndCreate {
                  //对比数据库内容，如果匹敌，登录跳转页面，如果不匹敌，显示账号或密码错误
                  if(true){
                      //进入首页
+                     gotofraMian();
                  }
                  else {
                      JOptionPane.showMessageDialog(panel, "账号或密码错误");//按下就出现
@@ -159,24 +162,26 @@ public class LoginAndCreate {
         return panel;
     }
 
-    //JPanel creat
-
-     void showLoginPanel() {
+    static void showLoginPanel() {
         frame.getContentPane().removeAll();
+        frame.setJMenuBar(null);
         frame.add(loginPanel);
         frame.revalidate();
         frame.repaint();
         //frame.pack();
     }
-
-     void showRegisterPanel() {
+    static void showRegisterPanel() {
         frame.getContentPane().removeAll();
+        frame.setJMenuBar(null);
         frame.add(registerPanel);
         frame.revalidate();
         frame.repaint();
         //frame.pack();
     }
 
-
-
+    //进入fraMain，即主板块
+    void gotofraMian(){
+        frame.getContentPane().removeAll();
+        fraMain.startfraMain(frame);
+    }
 }
