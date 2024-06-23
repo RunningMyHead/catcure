@@ -42,7 +42,7 @@ public class fraMain {
         JMenuItem newUserPosts = new JMenuItem("发布帖子");
         menuPublish.add(newUserPosts);
 
-        Publishbar.Publishmenu(UserPosts,newUserPosts,frame);
+        Publishbar.Publishmenu(UserPosts,newUserPosts,frame,userID);
     }//发布:查看已发布帖子，发布帖子
     public static void startfraMain( JFrame frame , String userID){
         JMenuBar menubar = new JMenuBar();//菜单栏
