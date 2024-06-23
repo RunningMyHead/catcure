@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.*;
 
 
 //数据库相关 61--78   登录，校验用户账号密码
@@ -67,14 +68,13 @@ public class LoginAndCreate {
              public void actionPerformed(ActionEvent e) {
                  // 处理登录逻辑
                  String username = usernameField.getText();//校验账号
-                 char[] password = passwordField.getPassword();//校验密码
+                 String password = passwordField.getText();//校验密码
 
                  //需要将数据传入至数据库中访问
-                 // true 为  校验函数
-                 //对比数据库内容，如果匹敌，登录跳转页面，如果不匹敌，显示账号或密码错误
-                 if(true){
+                 if(suerstureorfalse(username , password)){
                      //进入首页
-                     gotofraMian();
+                     gotofraMian(username);
+
                  }
                  else {
                      JOptionPane.showMessageDialog(panel, "账号或密码错误");//按下就出现
@@ -149,7 +149,7 @@ public class LoginAndCreate {
                     JOptionPane.showMessageDialog(panel, "注册成功");
 
                     //将 username ， password 载入至数据库中保存
-
+                    chuangjiansuer(username,password);
                     showLoginPanel();//自动跳转至登录页面
                 }
                 else {
@@ -168,7 +168,6 @@ public class LoginAndCreate {
         frame.add(loginPanel);
         frame.revalidate();
         frame.repaint();
-        //frame.pack();
     }
     static void showRegisterPanel() {
         frame.getContentPane().removeAll();
@@ -176,12 +175,86 @@ public class LoginAndCreate {
         frame.add(registerPanel);
         frame.revalidate();
         frame.repaint();
-        //frame.pack();
     }
 
     //进入fraMain，即主板块
-    void gotofraMian(){
+    void gotofraMian(String userID){
         frame.getContentPane().removeAll();
-        fraMain.startfraMain(frame);
+        frame.setJMenuBar(null);
+        fraMain.startfraMain(frame , userID);
+        frame.revalidate();
+        frame.repaint();
+    }
+
+    public boolean suerstureorfalse(String userID, String usermima) {
+        String JDBC_URL = "jdbc:mysql://localhost:3306/text00?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8";
+        String JDBC_USER = "root";
+        String JDBC_PASSWORD = "20040612";
+        boolean isValidUser = false;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            // Load MySQL JDBC Driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Establish the connection to the database
+            connection = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+
+            // SQL query to check if the user credentials are valid
+            String sql = "SELECT COUNT(*) FROM users WHERE account = ? AND password = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, userID);
+            preparedStatement.setString(2, usermima);
+
+            // Execute the query
+            resultSet = preparedStatement.executeQuery();
+
+            // Check the result
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                isValidUser = (count > 0);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            // Close resources in reverse order of their opening
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return isValidUser;
+    }
+    public void chuangjiansuer(String suersID, String suersmima) {
+        String JDBC_URL = "jdbc:mysql://localhost:3306/text00?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8";
+        String JDBC_USER = "root";
+        String JDBC_PASSWORD = "20040612";
+        String sql = "INSERT INTO users (account, password, username) VALUES (?, ?, ?)";
+        try (
+                // 连接数据库
+                Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+                // 准备插入语句
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+            // 设置参数
+            stmt.setString(1, suersID);
+            stmt.setString(2, suersmima);
+            stmt.setString(3, suersID);
+
+            // 执行插入
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("A new user was inserted successfully!");
+            }
+            // 在try-with-resources中使用，不需要手动关闭conn和stmt，它们会自动关闭
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
