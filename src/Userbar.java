@@ -129,7 +129,7 @@ public class Userbar {
                 @Override
                 public void actionPerformed(ActionEvent event) {
                     String newUsername = usernameField.getText();
-                    String newPassword = new String(passwordField.getPassword());
+                    String newPassword = passwordField.getText();
                     String confirmPassword = new String(confirmPasswordField.getPassword());
 
                     if (newUsername.isEmpty() && newPassword.isEmpty()) {
@@ -145,20 +145,23 @@ public class Userbar {
                     try {
                         Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
                         int rowsAffected = -1;
-                        if(newUsername != null&& newPassword != null){
+                        if(!(newUsername.isEmpty()) && !(newPassword.isEmpty())){
+                            System.out.println("1");
                             PreparedStatement stmtUpdateUser = conn.prepareStatement("UPDATE users SET username = ?, password = ? WHERE account = ?");
                             stmtUpdateUser.setString(1, newUsername);
                             stmtUpdateUser.setString(2, newPassword);
                             stmtUpdateUser.setString(3, userID);
                             rowsAffected = stmtUpdateUser.executeUpdate();
                         }
-                        else if(newUsername == null) {
+                        else if(newUsername .isEmpty()) {
+                            System.out.println("2");
                             PreparedStatement stmtUpdateUser = conn.prepareStatement("UPDATE users SET password = ? WHERE account = ?");
                             stmtUpdateUser.setString(1, newPassword);
                             stmtUpdateUser.setString(2, userID);
                             rowsAffected = stmtUpdateUser.executeUpdate();
                         }
-                        else if(newPassword == null){
+                        else if(newPassword .isEmpty()){
+                            System.out.println("3");
                             PreparedStatement stmtUpdateUser = conn.prepareStatement("UPDATE users SET username = ?WHERE account = ?");
                             stmtUpdateUser.setString(1, newUsername);
                             stmtUpdateUser.setString(2, userID);
